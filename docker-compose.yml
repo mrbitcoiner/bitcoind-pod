@@ -1,0 +1,20 @@
+services:
+  bitcoind:
+    container_name: bitcoind
+    build: ./containers/bitcoind
+    working_dir: /app
+    volumes:
+      - ./containers/bitcoind/volume/data:/app
+    # environment:
+    #   - name=value
+    ports:
+      - 8332:8332
+    # depends_on:
+    #   - serviceName
+    networks:
+      - bitcoin
+
+networks:
+  bitcoin:
+    name: bitcoin
+    external: true

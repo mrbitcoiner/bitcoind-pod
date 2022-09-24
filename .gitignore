@@ -1,0 +1,3 @@
+containers/bitcoind/volume/data
+containers/bitcoind/volume/config
+!containers/bitcoind/volume/config/*.example
