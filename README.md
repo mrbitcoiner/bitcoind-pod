@@ -1,5 +1,5 @@
 # Dockerized Bitcoind
-## Run your bitcoin node from source on multiple architetures with a few commands
+## Run your bitcoin node from source on multiple architectures with a few commands
 
 * OBS: Tested on an MBP 13 M1 (aarch64) but should also work with x86_64 processors.
 * Keeping only the last 10GB of timechain in the default config. You can override this as described below.
