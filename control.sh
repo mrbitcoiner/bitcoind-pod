@@ -20,16 +20,15 @@ makeDirs(){
     mkdir -p containers/bitcoind/volume/scripts
     mkdir -p containers/bitcoind/volume/config
     mkdir -p containers/bitcoind/volume/data
-    mkdir -p containers/bitcoind/volume/bitcoinData
+    mkdir -p containers/bitcoind/volume/data/bitcoinData
     mkdir -p containers/bitcoind/volume/data/verifications
 }
 setScriptsPermissions(){
-    if [ -e containers/bitcoind/volume/scripts/*.sh ]; then
-        chmod +x containers/bitcoind/volume/scripts/*.sh
-    fi
+    chmod +x containers/bitcoind/volume/scripts/*.sh
 }
 clean(){
     if [ -e containers/bitcoind/volume/data ]; then rm -r containers/bitcoind/volume/data; fi
+    if [ -e containers/bitcoind/volume/config/bitcoinConfig ]; then rm -r containers/bitcoind/volume/config/bitcoinConfig; fi
     printf 'Data purged\n'
 }
 startContainers(){
@@ -40,6 +39,9 @@ startContainers(){
 }
 stopContainers(){
     docker-compose down
+}
+bitcoinConfigCp(){
+    cp containers/bitcoind/volume/config/bitcoinConfig.example containers/bitcoind/volume/config/bitcoinConfig
 }
 #################################################
 # Menu
@@ -53,10 +55,13 @@ case $1 in
     down)
         stopContainers
     ;;
+    bitcoinconfigcp)
+        bitcoinConfigCp
+    ;;
     clean)
         clean
     ;;
     *)
-        printf 'Usage: [up|down|clean]\n'
+        printf 'Usage: [up|down|bitcoinconfigcp|clean|help]\n'
     ;;
 esac
