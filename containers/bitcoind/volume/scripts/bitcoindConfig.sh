@@ -15,8 +15,12 @@ printf "
 # rpcallowip=${BITCOIN_RPCALLOWIP}
 # onlynet=${BITCOIN_ONLYNET}
 # proxy=${BITCOIN_PROXY}
-# regtest=${BITCOIN_REGTEST}
-# regtest.rpcport=${BITCOIN_REGTEST_RPCPORT}
+
+## Uncomment to start in regtest mode
+#regtest=${BITCOIN_REGTEST}
+#regtest.rpcport=${BITCOIN_REGTEST_RPCPORT}
+#regtest.bind=${BITCOIN_BIND}
+#regtest.rpcbind=${BITCOIN_RPCBIND}
 
 main=${BITCOIN_MAIN}
 daemon=${BITCOIN_DAEMON}
