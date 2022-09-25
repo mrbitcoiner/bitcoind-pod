@@ -8,10 +8,10 @@ set -e
 #################################################
 # Functions
 depsVerify(){
-    if ! which which > /dev/null; then printf 'Please install or set \"which\" $PATH\n'; fi
-    if ! which grep > /dev/null; then printf 'Please install or set \"grep\" $PATH\n'; fi
-    if ! which docker > /dev/null; then printf 'Please install or set \"docker\" $PATH\n'; fi
-    if ! which docker-compose > /dev/null; then printf 'Please install or set \"docker-compose\" $PATH\n'; fi
+    if ! which which > /dev/null; then printf 'Please install or set \"which\" $PATH\n'; exit 1; fi
+    if ! which grep > /dev/null; then printf 'Please install or set \"grep\" $PATH\n'; exit 1; fi
+    if ! which docker > /dev/null; then printf 'Please install or set \"docker\" $PATH\n'; exit 1; fi
+    if ! which docker-compose > /dev/null; then printf 'Please install or set \"docker-compose\" $PATH\n'; exit 1; fi
 }
 makeDirs(){
     mkdir -p containers

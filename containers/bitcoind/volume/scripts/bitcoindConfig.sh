@@ -17,10 +17,10 @@ printf "
 # proxy=${BITCOIN_PROXY}
 
 ## Uncomment to start in regtest mode
-#regtest=${BITCOIN_REGTEST}
-#regtest.rpcport=${BITCOIN_REGTEST_RPCPORT}
-#regtest.bind=${BITCOIN_BIND}
-#regtest.rpcbind=${BITCOIN_RPCBIND}
+# regtest=${BITCOIN_REGTEST}
+# regtest.rpcport=${BITCOIN_REGTEST_RPCPORT}
+# regtest.bind=${BITCOIN_BIND}
+# regtest.rpcbind=${BITCOIN_RPCBIND}
 
 main=${BITCOIN_MAIN}
 daemon=${BITCOIN_DAEMON}
