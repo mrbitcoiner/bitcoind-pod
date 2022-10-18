@@ -7,7 +7,7 @@ RUN apt update && apt upgrade -y
 RUN apt install -y \
         git sqlite3 \
         build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 \
-        libevent-dev libboost-dev libsqlite3-dev tor
+        libevent-dev libboost-dev libsqlite3-dev tor systemctl
 
 COPY ./volume/scripts/init.sh /init.sh
 

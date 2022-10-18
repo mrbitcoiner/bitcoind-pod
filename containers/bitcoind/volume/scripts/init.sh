@@ -29,10 +29,14 @@ archCheck(){
 bitcoindSetup(){
     /app/scripts/bitcoindSetup.sh
 }
+startServices(){
+    systemctl start tor
+}
 # Init
 printf "Bitcoind container running\n"
 printf "Current architeture: $(arch)\n"
 
+startServices
 bitcoinConfCheck
 archCheck
 bitcoindSetup
