@@ -24,13 +24,6 @@ bitcoindBuild(){
     printf 'Congrats, build finished!\n'
     sleep 5
 }
-addToPath(){
-    if ! grep bitcoin /root/.bashrc > /dev/null; then
-        printf 'Bitcoin bin path not set\n'
-        # export PATH=/app/data/bitcoinData/bitcoin/src:${PATH}
-        # printf "export PATH="'${PATH}'":/app/data/bitcoinData/bitcoin/src\n" >> /root/.bashrc
-    fi
-}
 setBitcoindDataOwnership(){
     if [ -e /app/data/bitcoinData/.bitcoin ]; then
         chown -R ${USER}:${USER} /app/data/bitcoinData/.bitcoin
@@ -48,7 +41,6 @@ startBitcoind(){
 #################################################
 
 bitcoindBuild
-addToPath
 setBitcoindDataOwnership
 setBitcoindConfig
 startBitcoind
