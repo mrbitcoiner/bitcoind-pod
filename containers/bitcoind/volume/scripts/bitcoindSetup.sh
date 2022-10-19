@@ -25,8 +25,11 @@ bitcoindBuild(){
     sleep 5
 }
 addToPath(){
-    export PATH=${PATH}:/app/data/bitcoinData/bitcoin/src
-    printf "export PATH="'${PATH}'":/app/data/bitcoinData/bitcoin/src\n" >> /root/.bashrc
+    if ! grep bitcoin /root/.bashrc > /dev/null; then
+        # printf 'Set bitcoin bin path\n'
+        # export PATH=${PATH}:/app/data/bitcoinData/bitcoin/src
+        # printf "export PATH="'${PATH}'":/app/data/bitcoinData/bitcoin/src\n" >> /root/.bashrc
+    fi
 }
 setBitcoindDataOwnership(){
     if [ -e /app/data/bitcoinData/.bitcoin ]; then

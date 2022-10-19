@@ -9,6 +9,9 @@ RUN apt install -y \
         build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 \
         libevent-dev libboost-dev libsqlite3-dev tor systemctl
 
+ENV BITCOIN_PATH='/app/data/bitcoinData/bitcoin/src'
+ENV PATH=${BITCOIN_PATH}:${PATH}
+
 COPY ./volume/scripts/init.sh /init.sh
 
 ENTRYPOINT [ "/init.sh" ]
