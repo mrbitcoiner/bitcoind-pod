@@ -26,8 +26,8 @@ bitcoindBuild(){
 }
 addToPath(){
     if ! grep bitcoin /root/.bashrc > /dev/null; then
-        # printf 'Set bitcoin bin path\n'
-        # export PATH=${PATH}:/app/data/bitcoinData/bitcoin/src
+        printf 'Bitcoin bin path not set\n'
+        # export PATH=/app/data/bitcoinData/bitcoin/src:${PATH}
         # printf "export PATH="'${PATH}'":/app/data/bitcoinData/bitcoin/src\n" >> /root/.bashrc
     fi
 }
