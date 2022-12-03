@@ -1,3 +1,6 @@
 containers/bitcoind/volume/data
+containers/bitcoind/volume/config/.env
+containers/bitcoind/volume/config/.env.*
 containers/bitcoind/volume/config/*
-!containers/bitcoind/volume/config/*.example
+!containers/bitcoind/volume/config/examples
+

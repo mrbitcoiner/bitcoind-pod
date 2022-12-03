@@ -5,13 +5,9 @@ services:
     working_dir: /app
     volumes:
       - ./containers/bitcoind/volume:/app
-    # environment:
-    #   - name=value
     ports:
       - 8332:8332
       - 3000:3000
-    # depends_on:
-    #   - serviceName
     networks:
       - bitcoin
 

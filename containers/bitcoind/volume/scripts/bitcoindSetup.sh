@@ -7,15 +7,15 @@
 set -e
 #################################################
 # Sources
-source /app/config/bitcoinConfig
+source /app/config/.env
 #################################################
 # Functions
 bitcoindBuild(){
     if [ -e /app/data/bitcoinData/bitcoin/src/bitcoind ]; then return 0; fi
     cd /app/data/bitcoinData
-    git clone ${BITCOIN_REPOSITORY_URL} bitcoin
+    git clone "${BITCOIN_REPOSITORY_URL}" bitcoin
     cd bitcoin
-    git checkout ${BITCOIN_COMMIT_VERSION}
+    git checkout "${BITCOIN_COMMIT_VERSION}"
     ./autogen.sh
     ./configure
     printf 'Starting bitcoin build, time to drink a cofee!\n'
@@ -32,11 +32,11 @@ setBitcoindDataOwnership(){
     fi
 }
 setBitcoindConfig(){
-    /app/scripts/bitcoindConfig.sh
+    if ! /app/scripts/bitcoindConfig.sh; then printf "ERROR SETTING UP BITCOIND CONFIG\n"; return 1; fi
 }
 startBitcoind(){
     export MALLOC_ARENA_MAX=1
-    bitcoind &
+    bitcoind
 }
 #################################################
 

@@ -7,12 +7,6 @@
 set -e
 #################################################
 # Functions
-bitcoinConfCheck(){
-    if [ ! -e /app/config/bitcoinConfig ]; then
-        printf 'bitcoinConfig file not found.\nRun "./control.sh bitcoinconfigcp" to fix.\n'
-        exit 1
-    fi
-}
 archCheck(){
     if [ ! -e /app/data/verifications/arch ]; then 
         printf "$(arch)" > /app/data/verifications/arch
@@ -27,7 +21,9 @@ archCheck(){
     fi
 }
 bitcoindSetup(){
-    /app/scripts/bitcoindSetup.sh
+    if ! /app/scripts/bitcoindSetup.sh; then 
+	printf "Error setting up Bitcoin Core. Killing Container!\n"; exit 1; 
+    fi
 }
 startTorService(){
     systemctl start tor
@@ -38,8 +34,5 @@ printf "Bitcoind container running\n"
 printf "Current architeture: $(arch)\n"
 
 startTorService
-bitcoinConfCheck
 archCheck
 bitcoindSetup
-
-tail -f /dev/null

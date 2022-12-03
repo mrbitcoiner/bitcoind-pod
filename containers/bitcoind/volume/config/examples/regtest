@@ -1,0 +1,17 @@
+#################################################
+## regtest config file
+
+regtest=1
+regtest.rpcport=3000
+regtest.bind=0.0.0.0
+regtest.rpcbind=0.0.0.0:3000
+regtest.rpcallowip=0.0.0.0/0
+daemon=0
+server=1
+prune=1024
+dbcache=100
+maxmempool=300
+maxconnections=20
+datadir=/app/data/bitcoinData/.bitcoin
+rpcuser=bitcoin
+rpcpassword=bitcoin

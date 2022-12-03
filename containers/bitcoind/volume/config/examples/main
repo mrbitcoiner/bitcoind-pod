@@ -1,0 +1,19 @@
+#################################################
+## main config file
+
+# Optional, remove the comments to enable tor
+#onlynet=onion
+#proxy=127.0.0.1:9050
+main=1
+daemon=0
+server=1
+prune=10240
+dbcache=100
+maxmempool=300
+maxconnections=20
+datadir=/app/data/bitcoinData/.bitcoin
+rpcuser=bitcoin
+rpcpassword=bitcoin
+rpcallowip=0.0.0.0/0
+bind=0.0.0.0
+rpcbind=0.0.0.0:8332
