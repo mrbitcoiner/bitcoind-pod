@@ -92,6 +92,9 @@ setup(){
   start_containers
 }
 teardown(){
+  for i in "${CONTAINERS[@]}"; do
+    docker exec -it ${i} gracefully_shutdown shutdown
+  done
   docker-compose down
 }
 clean(){
