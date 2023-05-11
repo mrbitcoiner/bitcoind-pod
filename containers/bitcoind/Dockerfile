@@ -1,17 +1,31 @@
-FROM ubuntu:22.04
+FROM debian:bullseye-slim
 
-RUN printf 'v0.1.1' > /version
-
-RUN apt update && apt upgrade -y
+RUN apt update -y
 
 RUN apt install -y \
         git sqlite3 \
         build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 \
-        libevent-dev libboost-dev libsqlite3-dev tor systemctl wget
+        libevent-dev libboost-dev libsqlite3-dev tor wget
 
-ENV BITCOIN_PATH='/app/data/bitcoinData/bitcoin/src'
+ARG CONTAINER_USER
+ARG HOST_UID
+ARG HOST_GID
+ARG BITCOIN_NETWORK
+ARG BITCOIN_USER
+ARG BITCOIN_PASSWORD
+ARG TOR_PROXY
+
+ENV CONTAINER_USER=${CONTAINER_USER}
+ENV TOR_PROXY=${TOR_PROXY}
+ENV BITCOIN_NETWORK=${BITCOIN_NETWORK}
+ENV BITCOIN_USER=${BITCOIN_USER}
+ENV BITCOIN_PASSWORD=${BITCOIN_PASSWORD}
+ENV BITCOIN_PATH="/app/data/bitcoinData/bitcoin/src"
 ENV PATH=${BITCOIN_PATH}:${PATH}
 
-COPY ./volume/scripts/init.sh /init.sh
+COPY ./volume/scripts /scripts
 
-ENTRYPOINT [ "/init.sh" ]
+RUN /scripts/user_setup.sh "${CONTAINER_USER}" "${HOST_UID}" "${HOST_GID}"
+
+
+ENTRYPOINT [ "/scripts/init.sh" ]

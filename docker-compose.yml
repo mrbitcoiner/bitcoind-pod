@@ -7,7 +7,8 @@ services:
       - ./containers/bitcoind/volume:/app
     ports:
       - 8332:8332
-      - 3000:3000
+      - 18443:18443
+      - 18332:18332
     networks:
       - bitcoin
 
