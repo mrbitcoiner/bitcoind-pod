@@ -37,9 +37,6 @@ start_containers(){
 	docker-compose up \
     --remove-orphans &
 }
-stop_containers(){
-	docker-compose down
-}
 copy_dotenv(){
   if ! [ -e .env ]; then
     cp .env.example .env
