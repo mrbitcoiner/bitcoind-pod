@@ -12,7 +12,7 @@ shutdown_bitcoind(){
   done
 }
 install(){
-  ln -s /app/scripts/gracefully_shutdown.sh /usr/bin/gracefully_shutdown
+  ln -sf /app/scripts/gracefully_shutdown.sh /usr/bin/gracefully_shutdown
 }
 ####################
 case ${1} in
