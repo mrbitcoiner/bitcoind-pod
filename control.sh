@@ -3,7 +3,7 @@
 set -e
 ####################
 readonly CONTAINERS=('bitcoind')
-readonly NETWORK='bitcoind'
+readonly NETWORK='bitcoin'
 ####################
 create_dirs(){
   for i in in "${CONTAINERS[@]}"; do
@@ -65,9 +65,9 @@ env_set(){
 }
 set_bitcoin_network(){
 	case "${1}" in
-		mainnet) env_set "BITCOIN_NETWORK" "mainnet" ;;
-    testnet) env_set "BITCOIN_NETWORK" "testnet" ;; 
-		regtest) env_set "BITCOIN_NETWORK" "regtest" ;;
+		mainnet) env_set "BITCOIN_NETWORK" ${1} ;;
+    testnet) env_set "BITCOIN_NETWORK" ${1} ;; 
+		regtest) env_set "BITCOIN_NETWORK" ${1} ;;
 		*) printf 'Expected network: [ mainnet | testnet | regtest ]\n' 1>&2; return 1 ;;
 	esac
 }
@@ -97,17 +97,52 @@ setup(){
   build_images
   start_containers
 }
-teardown(){
+gracefully_shutdown(){
   for i in "${CONTAINERS[@]}"; do
     docker exec -it ${i} gracefully_shutdown shutdown
   done
-  docker-compose down
+}
+remove_containers(){
+  for i in "${CONTAINERS[@]}"; do
+    docker rm ${i}
+  done
+}
+force_shutdown(){
+    printf 'Forcing shutdown\n' 1>&2
+    docker-compose down
+}
+still_running(){
+  some_running=false
+  for i in "${CONTAINERS[@]}"; do
+    if docker ps -f name=${i} | grep '^.*   '${i}'$' > /dev/null; then
+      some_running=true
+      return 0
+    fi
+  done
+  ${some_running}
+}
+teardown(){
+  gracefully_shutdown || true
+  local counter=0
+  local max=60
+  printf "\n"
+  while [ "${counter}" -le "${max}" ]; do
+    if still_running; then
+      printf "\rWaiting gracefully_shutdown ${counter}/${max}s"
+      counter=$((${counter} + 1))
+      sleep 1
+    else
+      break
+    fi
+  done
+  printf "\n"
+  if ! remove_containers; then force_shutdown; fi
 }
 clean(){
-  printf 'Are you sure? (Y/any): '
+  printf 'Are you sure? (Y/n): '
   read input
   if ! echo "${input}" | grep '^Y$' > /dev/null; then
-    printf "Aborted!\n"; return 1
+    printf "Abort!\n"; return 1
   fi
   for i in "${CONTAINERS[@]}"; do
     local data_path="./containers/${i}/volume/data"

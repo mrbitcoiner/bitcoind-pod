@@ -2,14 +2,8 @@
 ####################
 set -e
 ####################
-bitcoind_running(){
-  pidof bitcoind > /dev/null
-}
 shutdown_bitcoind(){
   su -c 'bitcoin-cli stop' ${CONTAINER_USER}
-  while bitcoind_running; do
-    sleep 1
-  done
 }
 install(){
   ln -sf /app/scripts/gracefully_shutdown.sh /usr/bin/gracefully_shutdown
