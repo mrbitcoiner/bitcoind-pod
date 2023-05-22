@@ -10,9 +10,9 @@ services:
       - 18443:18443
       - 18332:18332
     networks:
-      - bitcoin
+      - bitcoind 
 
 networks:
-  bitcoin:
-    name: bitcoin
+  bitcoind:
+    name: bitcoind
     external: true

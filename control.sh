@@ -2,13 +2,21 @@
 ####################
 set -e
 ####################
-readonly CONTAINERS=("bitcoind")
-readonly NETWORK="bitcoin"
+readonly CONTAINERS=('bitcoind')
+readonly NETWORK='bitcoind'
 ####################
 create_dirs(){
   for i in in "${CONTAINERS[@]}"; do
     mkdir -p containers/bitcoind/volume/data
   done
+}
+get_env(){
+  local FILE_PATH='.env'
+  if [ -z "${1}" ]; then printf 'Expected key\n' 1>&2; return 1; fi
+  local key="${1}"
+  if ! [ -e "${FILE_PATH}" ]; then printf "File ${FILE_PATH} not found\n" 1>&2; return 1; fi
+  if ! grep '^'${key}'=.*$' ${FILE_PATH} > /dev/null; then printf 'Key not found in file' 1>&2; return 1; fi
+  printf "$(grep '^'${key}'=.*$' ${FILE_PATH})"
 }
 set_scripts_permissions(){
   for i in in "${CONTAINERS[@]}"; do
@@ -25,13 +33,14 @@ create_network(){
 }
 build_images(){
   docker-compose build \
-    --build-arg $(grep '^BITCOIN_NETWORK=.*$' .env) \
-    --build-arg $(grep '^TOR_PROXY=.*$' .env) \
-    --build-arg $(grep '^HOST_UID=.*$' .env) \
-    --build-arg $(grep '^HOST_GID=.*$' .env) \
-    --build-arg $(grep '^CONTAINER_USER=.*$' .env) \
-    --build-arg $(grep '^BITCOIN_USER=.*$' .env) \
-    --build-arg $(grep '^BITCOIN_PASSWORD=.*$' .env)
+    --build-arg $(get_env BITCOIN_NETWORK) \
+    --build-arg $(get_env TOR_PROXY) \
+    --build-arg $(get_env HOST_UID) \
+    --build-arg $(get_env HOST_GID) \
+    --build-arg $(get_env CONTAINER_USER) \
+    --build-arg $(get_env BITCOIN_USER) \
+    --build-arg $(get_env BITCOIN_PASSWORD) \
+    --build-arg $(get_env BITCOIN_NETWORK)
 }
 start_containers(){
 	docker-compose up \
@@ -113,6 +122,7 @@ case "${1}" in
 	up) setup "${2}" "${3}" ;;
 	down) teardown ;;
 	clean) clean ;;
+  nop) ;;
 	*) printf 'Usage: [ up | down | clean | help ]\n' ;;
 esac	
 
