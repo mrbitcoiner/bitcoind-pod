@@ -102,15 +102,6 @@ gracefully_shutdown(){
     docker exec -it ${i} gracefully_shutdown shutdown
   done
 }
-remove_containers(){
-  for i in "${CONTAINERS[@]}"; do
-    docker rm ${i}
-  done
-}
-force_shutdown(){
-    printf 'Forcing shutdown\n' 1>&2
-    docker-compose down
-}
 still_running(){
   some_running=false
   for i in "${CONTAINERS[@]}"; do
@@ -136,7 +127,7 @@ teardown(){
     fi
   done
   printf "\n"
-  if ! remove_containers; then force_shutdown; fi
+  docker-compose down
 }
 clean(){
   printf 'Are you sure? (Y/n): '
