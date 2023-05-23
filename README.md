@@ -5,22 +5,26 @@
 * Keeping only the last 10GB of timechain in the default config. You can override this changing the main (or regtest) configuration files.
 * For fast sync, proxying bitcoin connections through tor is disabled by default. Check the main configuration file to change this behavior.
 
-### Check (or change) the configurations
-```
-vi containers/bitcoind/volume/config/mainnet.conf
-```
+## Usage
 
-### Start:
+### copy .env.example to .env and check/change the configurations
+
+### Start
 ```
 ./control.sh up
 ```
 
-### Stop:
+### Run bitcoin-cli commands
+```
+./control.sh cli_wrapper '--getinfo'
+```
+
+### Stop
 ```
 ./control.sh down
 ```
 
-### Clean data:
+### Clean data
 ```
 ./control.sh clean
 ```

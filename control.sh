@@ -2,7 +2,8 @@
 ####################
 set -e
 ####################
-readonly CONTAINERS=('bitcoind')
+readonly BITCOIND_CONTAINER='bitcoind'
+readonly CONTAINERS=("${BITCOIND_CONTAINER}")
 readonly NETWORK='bitcoin'
 ####################
 create_dirs(){
@@ -143,12 +144,19 @@ clean(){
   done
 	printf 'Cleaned\n'
 }
+cli_wrapper(){
+  if [ -z "${1}" ]; then printf 'Expected: [ command ]\n' 1>&2; return 1; fi
+  local command="${1}"
+  local "$(get_env 'CONTAINER_USER')"
+  docker exec -it ${BITCOIND_CONTAINER} su -c 'bitcoin-cli '"${command}"'' ${CONTAINER_USER}
+} 
 ####################
 case "${1}" in
 	up) setup "${2}" "${3}" ;;
 	down) teardown ;;
 	clean) clean ;;
+  cli_wrapper) cli_wrapper "${2}" ;;
   nop) ;;
-	*) printf 'Usage: [ up | down | clean | help ]\n' ;;
+	*) printf 'Usage: [ up | down | cli_wrapper | clean | help ]\n' ;;
 esac	
 
