@@ -30,21 +30,17 @@ copy_cfg(){
   esac
 }
 set_config(){
-  if [ -z ${1} ] || [ -z ${2} ]; then
-    printf "Expected: [key] [value]\n" 1>&2; return 1
-  fi
-  local key="${1}"
-  local value="${2}"
-  if ! grep '^'${key}'=.*$' ${CFG_FILE} > /dev/null; then
-    echo "${key}=${value}" >> ${CFG_FILE}
-  else
-    sed -i'.old' -e 's/^'${key}'=.*$/'${key}=${value}'/g' ${CFG_FILE}
-  fi
+  /app/scripts/set_dotenv.sh "${CFG_FILE}" "${1}" "${2}"
 }
 set_tor(){
   if echo "${TOR_PROXY}" | grep '^enabled$' > /dev/null; then
     set_config "onlynet" "onion"
     set_config "proxy" "127.0.0.1:9050"
+  fi
+}
+set_pruning(){
+  if [ "${BITCOIN_PRUNE}" -gt "0" ] > /dev/null; then
+    set_config "prune" "${BITCOIN_PRUNE}"
   fi
 }
 set_auth(){
@@ -56,6 +52,5 @@ create_directories
 copy_base_cfg
 copy_cfg
 set_tor
+set_pruning
 set_auth
-
-

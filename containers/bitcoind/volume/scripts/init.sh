@@ -2,7 +2,7 @@
 ####################
 set -e
 ####################
-su -c '/scripts/bitcoind_build.sh' ${CONTAINER_USER}
+su -c '/app/scripts/bitcoind_build.sh' ${CONTAINER_USER}
 /app/scripts/gracefully_shutdown.sh install
 if echo "${TOR_PROXY}" | grep '^enabled$' > /dev/null; then
   su -c 'tor &' ${CONTAINER_USER}
