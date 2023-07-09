@@ -18,10 +18,16 @@ clone(){
     git checkout ${BITCOIN_COMMIT_VERSION}
   fi
 }
-build(){
+build_bdb(){
+  ./contrib/install_db4.sh ${PWD}
+}
+build_bitcoind(){
+  export BDB_PREFIX="${BITCOIN_PATH}/bitcoin/db4";
   ./autogen.sh
-  ./configure
-  printf '\nStarting bitcoin build, time to drink a cofee!\n'
+  ./configure \
+  BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \
+  BDB_CFLAGS="-I${BDB_PREFIX}/include"
+  printf '\nStarting bitcoin build, time to drink a coffee!\n'
   sleep 5
   time make
   printf 'Build finished successfully!\n'
@@ -29,5 +35,6 @@ build(){
 }
 ####################
 clone
-build
+build_bdb
+build_bitcoind
 

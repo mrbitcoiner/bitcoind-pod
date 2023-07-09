@@ -1,7 +1,7 @@
 testnet=1
 daemon=0
 server=1
-prune=10240
+prune=0
 dbcache=100
 maxmempool=300
 maxconnections=20
