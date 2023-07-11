@@ -67,7 +67,7 @@ setup(){
 }
 gracefully_shutdown(){
   for i in "${CONTAINERS[@]}"; do
-    docker exec -it ${i} gracefully_shutdown shutdown
+    docker exec ${i} gracefully_shutdown shutdown
   done
 }
 still_running(){
