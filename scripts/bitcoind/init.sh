@@ -4,8 +4,7 @@ set -e
 ####################
 ####################
 setup_tor(){
-	[ "${TOR_PROXY}" == "enabled" ] && tor 1>/dev/null || true & 
-	echo "setup_tor"
+	[ "${TOR_PROXY}" == "enabled" ] && tor 1>/dev/null || return 0 & 
 }
 setup_bitcoind(){
 	/static/scripts/bitcoind/setup-bitcoind.sh

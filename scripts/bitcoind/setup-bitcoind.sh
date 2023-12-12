@@ -75,7 +75,7 @@ prune=${BITCOIN_PRUNE}
 EOF
 }
 set_tor(){
-	[ "${TOR_NETWORK}" == "enabled" ] && \
+	[ "${TOR_PROXY}" == "enabled" ] && \
 	cat << EOF >> ${CFG_FILE} || true
 onlynet=onion
 proxy=127.0.0.1:9050
