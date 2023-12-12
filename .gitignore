@@ -1,10 +1,5 @@
 .env
 .env.old
-containers/bitcoind/volume/data
-containers/bitcoind/volume/config/.env
-containers/bitcoind/volume/config/.env.*
-containers/bitcoind/volume/config/*
-!containers/bitcoind/volume/config/examples
 *.old
 **/*.swp
 data/
