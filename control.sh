@@ -2,127 +2,73 @@
 ####################
 set -e
 ####################
-readonly BITCOIND_CONTAINER='bitcoind'
-readonly CONTAINERS=("${BITCOIND_CONTAINER}")
-readonly NETWORK='bitcoin'
+readonly HELP_MSG='usage: < build | up | down | clean >'
+readonly RELDIR="$(dirname ${0})"
 ####################
-create_dirs(){
-  for i in in "${CONTAINERS[@]}"; do
-    mkdir -p containers/bitcoind/volume/data
-  done
+source "${RELDIR}/.env"
+####################
+eprintln(){
+	! [ -z "${1}" ] || eprintln 'eprintln err: undefined message'
+	printf "${1}\n" 1>&2
+	return 1
 }
-get_env(){
-  local FILE_PATH='.env'
-  if [ -z "${1}" ]; then printf 'Expected key\n' 1>&2; return 1; fi
-  local key="${1}"
-  if ! [ -e "${FILE_PATH}" ]; then printf "File ${FILE_PATH} not found\n" 1>&2; return 1; fi
-  if ! grep '^'${key}'=.*$' ${FILE_PATH} > /dev/null; then printf 'Key not found in file' 1>&2; return 1; fi
-  printf "$(grep '^'${key}'=.*$' ${FILE_PATH})"
+check_env(){
+	! [ -z "${IMG_NAME}" ] || eprintln 'undefined env IMG_NAME'
+	! [ -z "${CT_NAME}" ] || eprintln 'undefined env CT_NAME'
+	! [ -z "${CT_MAINNET_PORT}" ] || eprintln 'undefined env CT_MAINNET_PORT'
+	! [ -z "${CT_TESTNET_PORT}" ] || eprintln 'undefined env CT_TESTNET_PORT'
+	! [ -z "${CT_REGTEST_PORT}" ] || eprintln 'undefined env CT_REGTEST_PORT'
+	! [ -z "${BITCOIN_NETWORK}" ] || eprintln 'undefined env BITCOIN_NETWORK'
+	! [ -z "${BITCOIN_USER}" ] || eprintln 'undefined env BITCOIN_USER'
+	! [ -z "${BITCOIN_PASSWORD}" ] || eprintln 'undefined env BITCOIN_PASSWORD'
+	! [ -z "${BITCOIN_PRUNE}" ] || eprintln 'undefined env BITCOIN_PRUNE'
+	! [ -z "${TOR_PROXY}" ] || eprintln 'undefined env TOR_PROXY'
 }
 set_scripts_permissions(){
-  for i in in "${CONTAINERS[@]}"; do
-    local scripts_path="./containers/${i}/volume/scripts"
-    if [ -e ${scripts_path}/init.sh ]; then
-	    chmod +x containers/${i}/volume/scripts/*.sh
-    fi
-  done
-  chmod +x ./scripts/*.sh
+	chmod +x scripts/*.sh 1>/dev/null 2>&1 || true
+	chmod +x scripts/bitcoind/*.sh 1>/dev/null 2>&1 || true
 }
-create_network(){
-	if ! docker network ls | awk '{print $2}' | grep "^${NETWORK}$" > /dev/null; then
-	  docker network create -d bridge ${NETWORK}
-	fi
+mkdirs(){
+	mkdir -p ${RELDIR}/data
 }
-build_images(){
-  docker-compose build \
-    --build-arg CONTAINER_USER=${USER} \
-    --build-arg CONTAINER_UID=$(id -u) \
-    --build-arg CONTAINER_GID=$(id -g) \
-    --build-arg $(get_env BITCOIN_NETWORK) \
-    --build-arg $(get_env BITCOIN_PRUNE) \
-    --build-arg $(get_env TOR_PROXY) \
-    --build-arg $(get_env BITCOIN_USER) \
-    --build-arg $(get_env BITCOIN_PASSWORD)
+migrate_from_v0_2_0(){
+	[ -e "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" ] && \
+	mv "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" \
+	${RELDIR}/data/ || true
 }
-start_containers(){
-	docker-compose up \
-    --remove-orphans &
-}
-copy_dotenv(){
-  if ! [ -e .env ]; then
-    cp .env.example .env
-  fi
-}
-env_set(){
-  ./scripts/set_dotenv.sh '.env' ${1} ${2}
-}
-####################
-setup(){
+common(){
+	check_env
 	set_scripts_permissions
-  copy_dotenv
-  create_network
-	create_dirs
-  build_images
-  start_containers
+	mkdirs
 }
-gracefully_shutdown(){
-  for i in "${CONTAINERS[@]}"; do
-    docker exec ${i} gracefully_shutdown shutdown
-  done
+build(){
+	common
+	podman build \
+		-f Dockerfile-bitcoind \
+		--tag="${IMG_NAME}" \
+		${RELDIR}
 }
-still_running(){
-  some_running=false
-  for i in "${CONTAINERS[@]}"; do
-    if docker ps -f name=${i} | grep '^.*   '${i}'$' > /dev/null; then
-      some_running=true
-      return 0
-    fi
-  done
-  ${some_running}
+up(){
+	common
+	migrate_from_v0_2_0
+	podman run --rm \
+		-p=${CT_MAINNET_PORT}:8332 \
+		-p=${CT_TESTNET_PORT}:18332 \
+		-p=${CT_REGTEST_PORT}:18443 \
+		--env-file="${RELDIR}/.env" \
+		-v="${RELDIR}/data:/data" \
+		--name="${CT_NAME}" \
+		"localhost/${IMG_NAME}" &
 }
-teardown(){
-  gracefully_shutdown || true
-  local counter=0
-  local max=60
-  printf "\n"
-  while [ "${counter}" -le "${max}" ]; do
-    if still_running; then
-      printf "\rWaiting gracefully_shutdown ${counter}/${max}s"
-      counter=$((${counter} + 1))
-      sleep 1
-    else
-      break
-    fi
-  done
-  printf "\n"
-  docker-compose down
+down(){
+	podman exec ${CT_NAME} /static/scripts/bitcoind/shutdown.sh || true
+	podman stop ${CT_NAME} || true
 }
-clean(){
-  printf 'Are you sure? (Y/n): '
-  read input
-  if ! echo "${input}" | grep '^Y$' > /dev/null; then
-    printf "Abort!\n"; return 1
-  fi
-  for i in "${CONTAINERS[@]}"; do
-    local data_path="./containers/${i}/volume/data"
-    if [ -e ${data_path} ]; then
-      rm -rfv ${data_path}
-    fi
-  done
-	printf 'Cleaned\n'
-}
-cli_wrapper(){
-  if [ -z "${1}" ]; then printf 'Expected: [ command ]\n' 1>&2; return 1; fi
-  local command="${1}"
-  docker exec -it ${BITCOIND_CONTAINER} su -c 'bitcoin-cli '"${command}"'' ${USER}
-} 
 ####################
-case "${1}" in
-	up) setup ;;
-	down) teardown ;;
+case ${1} in
+	build) build ;;
+	up) up ;;
+	down) down ;;
 	clean) clean ;;
-  cli_wrapper) cli_wrapper "${2}" ;;
-  nop) ;;
-	*) printf 'Usage: [ up | down | cli_wrapper | clean | help ]\n' ;;
-esac	
-
+	*) eprintln "${HELP_MSG}" ;;
+esac

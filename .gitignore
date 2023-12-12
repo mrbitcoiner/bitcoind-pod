@@ -5,4 +5,6 @@ containers/bitcoind/volume/config/.env
 containers/bitcoind/volume/config/.env.*
 containers/bitcoind/volume/config/*
 !containers/bitcoind/volume/config/examples
-
+*.old
+**/*.swp
+data/
