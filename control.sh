@@ -33,6 +33,7 @@ mkdirs(){
 }
 migrate_from_v0_2_0(){
 	[ -e "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" ] && \
+	printf "detected older version, moving data to new directory\n" && \
 	mv "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" \
 	${RELDIR}/data/ || true
 }
@@ -62,7 +63,17 @@ up(){
 }
 down(){
 	podman exec ${CT_NAME} /static/scripts/bitcoind/shutdown.sh || true
-	podman stop ${CT_NAME} || true
+	podman stop ${CT_NAME} 1>/dev/null 2>&1 || true
+}
+clean(){
+	printf 'Are you sure? This will delete all container volume data (Y/n): '
+	read input
+	[ "${input}" == "Y" ] || eprintln 'ABORT!'
+	rm -rf ${RELDIR}/data || true
+}
+bitcoin-cli(){
+	! [ -z "${1}" ] || eprintln 'expected: <command>'
+	podman exec -it ${CT_NAME} bitcoin-cli ${1}
 }
 ####################
 case ${1} in
@@ -70,5 +81,6 @@ case ${1} in
 	up) up ;;
 	down) down ;;
 	clean) clean ;;
+	bitcoin-cli) bitcoin-cli "${2}" ;;
 	*) eprintln "${HELP_MSG}" ;;
 esac

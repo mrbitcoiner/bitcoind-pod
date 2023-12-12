@@ -9,6 +9,11 @@
 
 ### copy .env.example to .env and check/change the configurations
 
+### Build the image
+```
+./control.sh build
+```
+
 ### Start
 ```
 ./control.sh up
@@ -16,7 +21,7 @@
 
 ### Run bitcoin-cli commands
 ```
-./control.sh cli_wrapper '--getinfo'
+./control.sh bitcoin-cli '--getinfo'
 ```
 
 ### Stop
@@ -24,7 +29,7 @@
 ./control.sh down
 ```
 
-### Clean data
+### Clean data (be careful!)
 ```
 ./control.sh clean
 ```
