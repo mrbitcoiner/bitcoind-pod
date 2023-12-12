@@ -32,10 +32,18 @@ mkdirs(){
 	mkdir -p ${RELDIR}/data
 }
 migrate_from_v0_2_0(){
-	[ -e "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" ] && \
-	printf "detected older version, moving data to new directory\n" && \
-	mv "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" \
-	${RELDIR}/data/ || true
+	[ -e "${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin" ] \
+	|| return 0
+	printf "Detected older version, migrate data? (Y/n): "
+	read input
+	[ "${input}" == "Y" ] || eprintln "ABORT!"
+	printf "This process must not be interrupted!\n"
+	mv \
+	${RELDIR}/containers/bitcoind/volume/data/bitcoinData/.bitcoin \
+	${RELDIR}/data/
+	rm -rf ${RELDIR}/containers
+	printf "Migration done!\n"
+	sleep 5
 }
 common(){
 	check_env
