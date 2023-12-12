@@ -3,7 +3,7 @@
 set -e
 ####################
 readonly BITCOIN_REPOSITORY_URL='https://github.com/bitcoin/bitcoin'
-readonly BITCOIN_COMMIT_VERSION='fcf6c8f4eb217763545ede1766831a6b93f583bd'
+readonly BITCOIN_COMMIT_VERSION='44d8b13c81e5276eb610c99f227a4d090cc532f6'
 ####################
 clone(){
 	git clone ${BITCOIN_REPOSITORY_URL} /bitcoin
@@ -11,10 +11,16 @@ clone(){
 	git checkout ${BITCOIN_COMMIT_VERSION}
 }
 build_bdb(){
-  ./contrib/install_db4.sh ${PWD}
+	make -C depends \
+	NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 \
+	NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1
 }
 build_bitcoind(){
-  export BDB_PREFIX="/bitcoin/db4";
+	case "$(arch)" in
+	aarch64) export BDB_PREFIX="/bitcoin/depends/aarch64-unknown-linux-gnu" ;;
+	x86_64) export BDB_PREFIX="/bitcoin/depends/x86_64-pc-linux-gnu" ;;
+	*) printf 'Unsupported architecture\n' 1>&2; return 1 ;;
+	esac
   ./autogen.sh
   ./configure \
   BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \

@@ -10,7 +10,7 @@ RUN \
 	apt install --no-install-recommends -y \
 	git sqlite3 build-essential libtool autotools-dev automake pkg-config \
 	bsdmainutils python3 libevent-dev libboost-dev libsqlite3-dev tor wget \
-	ca-certificates; \
+	curl ca-certificates; \
 	/static/scripts/bitcoind/build.sh
 
 FROM docker.io/library/debian:bookworm-slim
