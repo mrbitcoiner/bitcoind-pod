@@ -25,19 +25,10 @@ build_bitcoind(){
   printf 'Build finished successfully!\n'
   sleep 5
 }
-install_bitcoind(){
-	make install
-	cd /
-}
-clean(){
-	rm -rf /bitcoin
-}
 build(){
 	clone
 	build_bdb
 	build_bitcoind
-	install_bitcoind
-	clean
 }
 ####################
 build

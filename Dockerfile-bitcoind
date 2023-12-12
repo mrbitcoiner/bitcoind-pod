@@ -5,11 +5,36 @@ ARG DEBIAN_FRONTEND=noninteractive
 COPY . /static
 
 RUN \
+	set -e; \
 	apt update; \
 	apt install --no-install-recommends -y \
 	git sqlite3 build-essential libtool autotools-dev automake pkg-config \
 	bsdmainutils python3 libevent-dev libboost-dev libsqlite3-dev tor wget \
 	ca-certificates; \
 	/static/scripts/bitcoind/build.sh
+
+FROM docker.io/library/debian:bookworm-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN mkdir -p /bitcoin/bin
+
+COPY --from=0 /static /static
+COPY --from=0 \
+	/bitcoin/src/bitcoin-cli \
+	/bitcoin/src/bitcoind \
+	/bitcoin/src/bitcoin-tx \
+	/bitcoin/src/bitcoin-util \
+	/bitcoin/src/bitcoin-wallet \
+	/bitcoin/bin/
+
+ENV PATH=/bitcoin/bin:${PATH}
+
+RUN \
+	set -e; \
+	apt update; \
+	apt install --no-install-recommends -y \
+	libevent-dev libsqlite3-dev tor \
+	ca-certificates
 
 ENTRYPOINT ["/static/scripts/bitcoind/init.sh"]
