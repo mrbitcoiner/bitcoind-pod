@@ -1,6 +1,7 @@
-# Dockerized Bitcoind
-## Run your bitcoin node from source on multiple architectures with a few commands
+# Bitcoind Pod
+## Run your Bitcoin node from source in a container on multiple architectures with a few commands
 
+* Podman required (only rootless needed)
 * Tested on aarch64 and x86_64
 * Mainnet, Regtest and Testnet
 * Support for Tor Onion proxying
