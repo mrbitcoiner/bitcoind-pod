@@ -34,6 +34,7 @@ rpcpassword=${BITCOIN_PASSWORD}
 rpcallowip=0.0.0.0/0
 bind=0.0.0.0
 rpcbind=0.0.0.0:8332
+deprecatedrpc=create_bdb
 EOF
 }
 testnet_cfg(){
@@ -50,6 +51,7 @@ rpcpassword=${BITCOIN_PASSWORD}
 test.rpcallowip=0.0.0.0/0
 test.rpcbind=0.0.0.0
 test.rpcport=18332
+deprecatedrpc=create_bdb
 EOF
 }
 regtest_cfg(){
@@ -66,6 +68,7 @@ maxconnections=20
 datadir=${BITCOIN_DATA_PATH}
 rpcuser=${BITCOIN_USER}
 rpcpassword=${BITCOIN_PASSWORD}
+deprecatedrpc=create_bdb
 EOF
 }
 set_prune(){
