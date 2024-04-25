@@ -2,7 +2,7 @@
 ####################
 set -e
 ####################
-readonly HELP_MSG='usage: < build | up | down | clean >'
+readonly HELP_MSG='usage: < build | up | down | mk-systemd | rm-systemd | clean >'
 readonly RELDIR="$(dirname ${0})"
 ####################
 source "${RELDIR}/.env"
@@ -51,14 +51,42 @@ common(){
 	mkdirs
 }
 build(){
-	common
 	podman build \
 		-f Dockerfile-bitcoind \
 		--tag="${IMG_NAME}" \
 		${RELDIR}
 }
+mk_systemd() {
+	! [ -e "/etc/systemd/system/${CT_NAME}.service" ] \
+		|| eprintln "service ${CT_NAME} already exists"
+	local user="${USER}"
+	sudo bash -c "cat << EOF > /etc/systemd/system/${CT_NAME}.service
+[Unit]
+Description=Bitcoind Pod
+After=network.target
+
+[Service]
+Environment=\"PATH=/usr/local/bin:/usr/bin:/bin:${PATH}\"
+User=${user}
+Type=forking
+ExecStart=/bin/bash -c \"cd ${PWD}/${RELDIR}; ./control.sh up\"
+ExecStop=/bin/bash -c \"cd ${PWD}/${RELDIR}; ./control.sh down\"
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+"
+	sudo systemctl enable "${CT_NAME}".service
+}
+rm_systemd() {
+	[ -e "/etc/systemd/system/${CT_NAME}.service" ] || return 0
+	sudo systemctl stop "${CT_NAME}".service || true
+	sudo systemctl disable "${CT_NAME}".service
+	sudo rm /etc/systemd/system/"${CT_NAME}".service
+}
 up(){
-	common
 	migrate_from_v0_2_0
 	podman run --rm \
 		-p=${CT_MAINNET_PORT}:8332 \
@@ -84,11 +112,14 @@ bitcoin-cli(){
 	podman exec -it ${CT_NAME} bitcoin-cli ${1}
 }
 ####################
+common
 case ${1} in
 	build) build ;;
 	up) up ;;
 	down) down ;;
 	clean) clean ;;
+	mk-systemd) mk_systemd ;;
+	rm-systemd) rm_systemd ;;
 	bitcoin-cli) bitcoin-cli "${2}" ;;
 	*) eprintln "${HELP_MSG}" ;;
 esac
