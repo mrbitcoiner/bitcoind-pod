@@ -31,10 +31,23 @@ build_bitcoind(){
   printf 'Build finished successfully!\n'
   sleep 5
 }
+finish() {
+	mv /bitcoin /bitcoin.old
+	mkdir -p /bitcoin/bin
+	mv \
+		/bitcoin.old/src/bitcoin-cli \
+		/bitcoin.old/src/bitcoind \
+		/bitcoin.old/src/bitcoin-tx \
+		/bitcoin.old/src/bitcoin-util \
+		/bitcoin.old/src/bitcoin-wallet \
+		/bitcoin/bin/
+	rm -rf /bitcoin.old
+}
 build(){
 	clone
 	build_bdb
 	build_bitcoind
+	finish
 }
 ####################
 build

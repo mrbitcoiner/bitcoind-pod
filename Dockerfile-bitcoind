@@ -20,13 +20,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN mkdir -p /bitcoin/bin
 
 COPY --from=0 /static /static
-COPY --from=0 \
-	/bitcoin/src/bitcoin-cli \
-	/bitcoin/src/bitcoind \
-	/bitcoin/src/bitcoin-tx \
-	/bitcoin/src/bitcoin-util \
-	/bitcoin/src/bitcoin-wallet \
-	/bitcoin/bin/
+COPY --from=0 /bitcoin /bitcoin
 
 ENV PATH=/bitcoin/bin:${PATH}
 
