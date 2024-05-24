@@ -84,6 +84,12 @@ onlynet=onion
 proxy=127.0.0.1:9050
 EOF
 }
+set_wallet() {
+	! [ -z "${WALLET}" ] || return 0
+	cat << EOF >> ${CFG_FILE} || true
+wallet=${WALLET}
+EOF
+}
 set_config(){
 	case ${BITCOIN_NETWORK} in
 	mainnet) mainnet_cfg ;;
@@ -96,6 +102,7 @@ setup(){
 	mkdirs
 	check_env
 	set_config
+	set_wallet
 	set_prune
 	set_tor
 }
