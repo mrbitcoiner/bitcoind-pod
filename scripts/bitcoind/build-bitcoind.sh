@@ -27,7 +27,7 @@ build_bitcoind(){
   BDB_CFLAGS="-I${BDB_PREFIX}/include"
   printf '\nStarting bitcoin build, time to drink a coffee!\n'
   sleep 5
-  time make
+  time make -j 4
   printf 'Build finished successfully!\n'
   sleep 5
 }

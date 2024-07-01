@@ -2,7 +2,7 @@ FROM docker.io/library/debian:bookworm-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-COPY . /static
+COPY /scripts/bitcoind/build-bitcoind.sh /static/scripts/build-bitcoind.sh
 
 RUN \
 	set -e; \
@@ -11,16 +11,14 @@ RUN \
 	git sqlite3 build-essential libtool autotools-dev automake pkg-config \
 	bsdmainutils python3 libevent-dev libboost-dev libsqlite3-dev tor wget \
 	curl ca-certificates; \
-	/static/scripts/bitcoind/build.sh
+	/static/scripts/build-bitcoind.sh
 
 FROM docker.io/library/debian:bookworm-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN mkdir -p /bitcoin/bin
-
-COPY --from=0 /static /static
 COPY --from=0 /bitcoin /bitcoin
+COPY . /static
 
 ENV PATH=/bitcoin/bin:${PATH}
 

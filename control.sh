@@ -52,7 +52,7 @@ common(){
 }
 build(){
 	podman build \
-		-f Dockerfile-bitcoind \
+		-f Containerfile \
 		--tag="${IMG_NAME}" \
 		${RELDIR}
 }
@@ -79,6 +79,7 @@ WantedBy=multi-user.target
 EOF
 "
 	sudo systemctl enable "${CT_NAME}".service
+	sudo systemctl start "${CT_NAME}".service
 }
 rm_systemd() {
 	[ -e "/etc/systemd/system/${CT_NAME}.service" ] || return 0
