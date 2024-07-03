@@ -79,7 +79,7 @@ WantedBy=multi-user.target
 EOF
 "
 	sudo systemctl enable "${CT_NAME}".service
-	sudo systemctl start "${CT_NAME}".service
+	printf "To start the service, run: sudo systemctl start "${CT_NAME}".service\n"
 }
 rm_systemd() {
 	[ -e "/etc/systemd/system/${CT_NAME}.service" ] || return 0
