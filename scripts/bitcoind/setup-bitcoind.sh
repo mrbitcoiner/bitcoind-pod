@@ -19,6 +19,7 @@ check_env(){
 	! [ -z "${BITCOIN_PRUNE}" ] || eprintln 'undefined env BITCOIN_PRUNE'
 	! [ -z "${BITCOIN_USER}" ] || eprintln 'undefined env BITCOIN_USER'
 	! [ -z "${BITCOIN_PASSWORD}" ] || eprintln 'undefined env BITCOIN_PASSWORD'
+	! [ -z "${TXINDEX}" ] || eprintln 'undefined env TXINDEX'
 }
 mainnet_cfg(){
 	cat << EOF > ${CFG_FILE} 
@@ -28,6 +29,7 @@ server=1
 dbcache=100
 maxmempool=300
 maxconnections=20
+txindex=${TXINDEX}
 datadir=${BITCOIN_DATA_PATH}
 rpcuser=${BITCOIN_USER}
 rpcpassword=${BITCOIN_PASSWORD}
@@ -45,6 +47,7 @@ server=1
 dbcache=100
 maxmempool=300
 maxconnections=20
+txindex=${TXINDEX}
 datadir=${BITCOIN_DATA_PATH}
 rpcuser=${BITCOIN_USER}
 rpcpassword=${BITCOIN_PASSWORD}
@@ -65,6 +68,7 @@ server=1
 dbcache=100
 maxmempool=300
 maxconnections=20
+txindex=${TXINDEX}
 datadir=${BITCOIN_DATA_PATH}
 rpcuser=${BITCOIN_USER}
 rpcpassword=${BITCOIN_PASSWORD}

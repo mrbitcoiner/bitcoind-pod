@@ -2,7 +2,7 @@ FROM docker.io/library/debian:bookworm-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-COPY /scripts/bitcoind/build-bitcoind.sh /static/scripts/build-bitcoind.sh
+ADD /scripts/bitcoind/build-bitcoind.sh /static/scripts/build-bitcoind.sh
 
 RUN \
 	set -e; \
@@ -18,7 +18,6 @@ FROM docker.io/library/debian:bookworm-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
 COPY --from=0 /bitcoin /bitcoin
-COPY . /static
 
 ENV PATH=/bitcoin/bin:${PATH}
 
@@ -29,4 +28,4 @@ RUN \
 	libevent-dev libsqlite3-dev tor \
 	ca-certificates
 
-ENTRYPOINT ["/static/scripts/bitcoind/init.sh"]
+ENTRYPOINT ["/app/scripts/bitcoind/init.sh"]

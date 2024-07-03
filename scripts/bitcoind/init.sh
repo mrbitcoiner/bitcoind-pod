@@ -8,7 +8,7 @@ setup_tor(){
 }
 setup_bitcoind(){
 	[ -e "/data/bitcoin-cli" ] || cp -a /bitcoin/bin/bitcoin-cli /data/bitcoin-cli
-	/static/scripts/bitcoind/setup-bitcoind.sh
+	/app/scripts/bitcoind/setup-bitcoind.sh
 	bitcoind
 }
 run() {

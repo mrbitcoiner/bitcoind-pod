@@ -22,6 +22,7 @@ check_env(){
 	! [ -z "${BITCOIN_USER}" ] || eprintln 'undefined env BITCOIN_USER'
 	! [ -z "${BITCOIN_PASSWORD}" ] || eprintln 'undefined env BITCOIN_PASSWORD'
 	! [ -z "${BITCOIN_PRUNE}" ] || eprintln 'undefined env BITCOIN_PRUNE'
+	! [ -z "${TXINDEX}" ] || eprintln 'undefined env TXINDEX'
 	! [ -z "${TOR_PROXY}" ] || eprintln 'undefined env TOR_PROXY'
 }
 set_scripts_permissions(){
@@ -94,12 +95,13 @@ up(){
 		-p=${CT_TESTNET_PORT}:18332 \
 		-p=${CT_REGTEST_PORT}:18443 \
 		--env-file="${RELDIR}/.env" \
+		-v=${RELDIR}:/app \
 		-v="${RELDIR}/data:/data" \
 		--name="${CT_NAME}" \
 		"localhost/${IMG_NAME}" &
 }
 down(){
-	podman exec ${CT_NAME} /static/scripts/bitcoind/shutdown.sh || true
+	podman exec ${CT_NAME} /app/scripts/bitcoind/shutdown.sh || true
 	podman stop ${CT_NAME} 1>/dev/null 2>&1 || true
 }
 clean(){
