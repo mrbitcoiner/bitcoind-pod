@@ -102,6 +102,15 @@ set_config(){
 	*) eprintln 'valid networks: < mainnet | testnet | regtest >';;
 	esac
 }
+set_zmq() {
+	[ "${ZMQ_ENABLED}" == "1" ] && (
+		cat << EOF >> ${CFG_FILE} || true
+zmqpubrawtx=tcp://0.0.0.0:28332
+zmqpubhashblock=tcp://0.0.0.0:28332
+zmqpubrawblock=tcp://0.0.0.0:28332
+EOF
+	) || true
+}
 setup(){
 	mkdirs
 	check_env
@@ -109,6 +118,7 @@ setup(){
 	set_wallet
 	set_prune
 	set_tor
+	set_zmq
 }
 ####################
 setup

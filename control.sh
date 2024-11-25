@@ -18,6 +18,7 @@ check_env(){
 	! [ -z "${CT_MAINNET_PORT}" ] || eprintln 'undefined env CT_MAINNET_PORT'
 	! [ -z "${CT_TESTNET_PORT}" ] || eprintln 'undefined env CT_TESTNET_PORT'
 	! [ -z "${CT_REGTEST_PORT}" ] || eprintln 'undefined env CT_REGTEST_PORT'
+	! [ -z "${CT_ZMQ_PORT}" ] || eprintln 'undefined env CT_ZMQ_PORT'
 	! [ -z "${BITCOIN_NETWORK}" ] || eprintln 'undefined env BITCOIN_NETWORK'
 	! [ -z "${BITCOIN_USER}" ] || eprintln 'undefined env BITCOIN_USER'
 	! [ -z "${BITCOIN_PASSWORD}" ] || eprintln 'undefined env BITCOIN_PASSWORD'
@@ -94,6 +95,7 @@ up(){
 		-p=${CT_MAINNET_PORT}:8332 \
 		-p=${CT_TESTNET_PORT}:18332 \
 		-p=${CT_REGTEST_PORT}:18443 \
+		-p=${CT_ZMQ_PORT}:28332 \
 		--env-file="${RELDIR}/.env" \
 		-v=${RELDIR}:/app \
 		-v="${RELDIR}/data:/data" \

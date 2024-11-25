@@ -23,6 +23,9 @@ build_bitcoind(){
 	esac
   ./autogen.sh
   ./configure \
+	--disable-tests \
+	--disable-bench \
+	--with-zmq \
   BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \
   BDB_CFLAGS="-I${BDB_PREFIX}/include"
   printf '\nStarting bitcoin build, time to drink a coffee!\n'
