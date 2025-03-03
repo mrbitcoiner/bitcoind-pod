@@ -99,6 +99,7 @@ up(){
 		--env-file="${RELDIR}/.env" \
 		-v=${RELDIR}:/app \
 		-v="${RELDIR}/data:/data" \
+		-v="${BITCOIN_CHAINSTATE_DIR:-${RELDIR}/data/.bitcoin/chainstate}:/data/.bitcoin/chainstate" \
 		--name="${CT_NAME}" \
 		"localhost/${IMG_NAME}" &
 }
