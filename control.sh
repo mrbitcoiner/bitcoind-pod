@@ -23,6 +23,7 @@ check_env(){
 	! [ -z "${BITCOIN_USER}" ] || eprintln 'undefined env BITCOIN_USER'
 	! [ -z "${BITCOIN_PASSWORD}" ] || eprintln 'undefined env BITCOIN_PASSWORD'
 	! [ -z "${BITCOIN_PRUNE}" ] || eprintln 'undefined env BITCOIN_PRUNE'
+	! [ -z "${BITCOIN_DBCACHE}" ] || eprintln 'undefined env BITCOIN_DBCACHE'
 	! [ -z "${TXINDEX}" ] || eprintln 'undefined env TXINDEX'
 	! [ -z "${TOR_PROXY}" ] || eprintln 'undefined env TOR_PROXY'
 }

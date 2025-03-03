@@ -26,7 +26,7 @@ mainnet_cfg(){
 main=1
 daemon=0
 server=1
-dbcache=100
+dbcache=${BITCOIN_DBCACHE}
 maxmempool=300
 maxconnections=20
 txindex=${TXINDEX}
@@ -44,7 +44,7 @@ testnet_cfg(){
 testnet=1
 daemon=0
 server=1
-dbcache=100
+dbcache=${BITCOIN_DBCACHE}
 maxmempool=300
 maxconnections=20
 txindex=${TXINDEX}
@@ -65,7 +65,7 @@ regtest.rpcbind=0.0.0.0
 regtest.rpcallowip=0.0.0.0/0
 daemon=0
 server=1
-dbcache=100
+dbcache=${BITCOIN_DBCACHE}
 maxmempool=300
 maxconnections=20
 txindex=${TXINDEX}
